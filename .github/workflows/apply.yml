@@ -1,0 +1,20 @@
+name: terraform-apply
+on:
+  workflow_dispatch:
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    env:
+      TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.8.5
+      - name: Init / Validate / Apply (remote on TFC)
+        working-directory: .
+        run: |
+          terraform init -input=false
+          terraform fmt -check
+          terraform validate
+          terraform apply -auto-approve -input=false
